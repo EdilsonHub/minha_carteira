@@ -1,9 +1,14 @@
 import React from 'react';
-// import GlobalStyles from './styles/GlobalStyles.ts';
+import ContentHeader from '../../components/ContentHeader';
+import {
+    Container
+} from './styles';
 
 const Dashbord: React.FC = () => {
     return (
-        <h1>Dashbord</h1>
+        <Container>
+            <ContentHeader />
+        </Container>
     );
 };
 

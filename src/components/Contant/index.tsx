@@ -1,10 +1,10 @@
 import React from 'react';
 import { Container } from './styles';
 
-const Contant: React.FC = () => {
+const Contant: React.FC = ({ children }) => {
     return (
         <Container>
-            <h1>Contant</h1>
+            { children }
         </Container>
     );
 };
