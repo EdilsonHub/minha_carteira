@@ -1,19 +1,27 @@
 import React from 'react';
+import  SelectInput from '../../components/SelectInput';
 import { 
     Container,
     Title,
-    Controllers
+    Controllers   
  } from './styles';
 
-const ContentHeader: React.FC = () => {
+ interface IContentHeader {
+     title: string;
+     lineColor: string;
+     children: React.ReactNode;
+ };
+
+const ContentHeader: React.FC<IContentHeader> = ({
+    title, lineColor, children
+}) => {
     return (
         <Container>
-            <Title>
-                <h1>Título</h1>
+            <Title lineColor={lineColor}>
+                <h1>{title}</h1>
             </Title>
             <Controllers>
-                <button type="button">Botão A</button>
-                <button type="button">Botão B</button>
+                {children}
             </Controllers>
         </Container>
     );
