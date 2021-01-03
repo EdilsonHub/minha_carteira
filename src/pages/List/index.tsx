@@ -1,11 +1,62 @@
-import React from 'react';
+import React, {useMemo, useState, useEffect} from 'react';
 
 import ContentHeader from '../../components/ContentHeader';
 import HistoryFinanceCard from '../../components/HistoryFinanceCard';
 import SelectInput from '../../components/SelectInput';
 
+import gains from '../../repositories/entradas';
+import espenses from '../../repositories/saidas';
+
+
 import { Container, Content, Filters } from './styles';
-const List: React.FC = () => {
+
+interface IRouteParams {
+     match: {
+          params: {
+               type: string;
+          }
+     };
+};
+
+interface IData {
+     description: string;
+     amountFromatted: string;
+     frequency: string;
+     dataFormatted: string;
+     tagColor: string;
+};
+const List: React.FC<IRouteParams> = ({ match }) => {
+     const [data, setData] = useState<IData[]>([]);
+
+     const { type } = match.params;
+     const title = useMemo(() => {
+          return type === 'entry-balance'? {
+               desc : 'Entradas',
+               color : '#F7931B',
+               data: gains
+          } : {
+               desc : 'Saídas',
+               color : '#E44C4E',
+               data: espenses
+          }
+     },[type]);
+
+     useEffect(() => {
+          
+          setData(title.data.map(
+               data => {
+                    return {
+                         description: data.description,
+                         amountFromatted:  data.amount,
+                         frequency:  data.frequency,
+                         dataFormatted:  data.date,
+                         tagColor: data.frequency === 'recorrente'? '#4E41F0' : '#E44C4E'
+                    }
+               }
+          ));
+
+     },[]);
+
     const months = [
         {value: '7', label: 'Julho'},
         {value: 'Guilherme', label: 'Guilherme'},
@@ -20,7 +71,7 @@ const List: React.FC = () => {
 
     return (
        <Container>
-           <ContentHeader title="Saídas" lineColor="#E44C4E">
+           <ContentHeader title={title.desc} lineColor={title.color}>
                <SelectInput options={months} />
                <SelectInput options={years} />
            </ContentHeader>
@@ -31,107 +82,18 @@ const List: React.FC = () => {
           </Filters>
 
            <Content>
-               <HistoryFinanceCard 
-                    cardColor="#313862"
-                    tagColor="#E44C4E"
-                    title="Conta de Luz"
-                    amount="R$ 130,00"
-                    subtitle="27/07/2020"
-               />
-
-
-<HistoryFinanceCard 
-                    cardColor="#313862"
-                    tagColor="#E44C4E"
-                    title="Conta de Luz"
-                    amount="R$ 130,00"
-                    subtitle="27/07/2020"
-               />
-                              <HistoryFinanceCard 
-                    cardColor="#313862"
-                    tagColor="#E44C4E"
-                    title="Conta de Luz"
-                    amount="R$ 130,00"
-                    subtitle="27/07/2020"
-               />
-                              <HistoryFinanceCard 
-                    cardColor="#313862"
-                    tagColor="#E44C4E"
-                    title="Conta de Luz"
-                    amount="R$ 130,00"
-                    subtitle="27/07/2020"
-               />
-                              <HistoryFinanceCard 
-                    cardColor="#313862"
-                    tagColor="#E44C4E"
-                    title="Conta de Luz"
-                    amount="R$ 130,00"
-                    subtitle="27/07/2020"
-               />
-                              <HistoryFinanceCard 
-                    cardColor="#313862"
-                    tagColor="#E44C4E"
-                    title="Conta de Luz"
-                    amount="R$ 130,00"
-                    subtitle="27/07/2020"
-               />
-                              <HistoryFinanceCard 
-                    cardColor="#313862"
-                    tagColor="#E44C4E"
-                    title="Conta de Luz"
-                    amount="R$ 130,00"
-                    subtitle="27/07/2020"
-               />
-                              <HistoryFinanceCard 
-                    cardColor="#313862"
-                    tagColor="#E44C4E"
-                    title="Conta de Luz"
-                    amount="R$ 130,00"
-                    subtitle="27/07/2020"
-               />
-                              <HistoryFinanceCard 
-                    cardColor="#313862"
-                    tagColor="#E44C4E"
-                    title="Conta de Luz"
-                    amount="R$ 130,00"
-                    subtitle="27/07/2020"
-               />
-                              <HistoryFinanceCard 
-                    cardColor="#313862"
-                    tagColor="#E44C4E"
-                    title="Conta de Luz"
-                    amount="R$ 130,00"
-                    subtitle="27/07/2020"
-               />
-                              <HistoryFinanceCard 
-                    cardColor="#313862"
-                    tagColor="#E44C4E"
-                    title="Conta de Luz"
-                    amount="R$ 130,00"
-                    subtitle="27/07/2020"
-               />
-                              <HistoryFinanceCard 
-                    cardColor="#313862"
-                    tagColor="#E44C4E"
-                    title="Conta de Luz"
-                    amount="R$ 130,00"
-                    subtitle="27/07/2020"
-               />
-                              <HistoryFinanceCard 
-                    cardColor="#313862"
-                    tagColor="#E44C4E"
-                    title="Conta de Luz"
-                    amount="R$ 130,00"
-                    subtitle="27/07/2020"
-               />
-                              <HistoryFinanceCard 
-                    cardColor="#313862"
-                    tagColor="#E44C4E"
-                    title="Conta de Luz"
-                    amount="R$ 130,00"
-                    subtitle="27/07/2020"
-               />
-               
+                { 
+                    data.map(item => (
+                         <HistoryFinanceCard 
+                         key={(new Date()).getTime() * Math.random()}
+                         cardColor=""
+                         tagColor={item.tagColor}
+                         title={item.description}
+                         amount={item.amountFromatted}
+                         subtitle={item.dataFormatted}
+                         />
+                    ))
+                }
            </Content>
        </ Container>
     );
