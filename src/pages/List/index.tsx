@@ -1,11 +1,12 @@
 import React, {useMemo, useState, useEffect} from 'react';
+import { v4 as uuid } from 'uuid';
 
 import ContentHeader from '../../components/ContentHeader';
 import HistoryFinanceCard from '../../components/HistoryFinanceCard';
 import SelectInput from '../../components/SelectInput';
 import formatCurrency from '../../utils/formatCurrency';
 import formatData from '../../utils/formatData';
-
+import listMonth from '../../utils/listMonth';
 
 import gains from '../../repositories/entradas';
 import espenses from '../../repositories/saidas';
@@ -71,18 +72,22 @@ const List: React.FC<IRouteParams> = ({ match }) => {
           );
      },[monthSelected, title.data, yearSelected]);
 
-    const months = [
-        {value: 7, label: 'Julho'},
-        {value: 8, label: 'Agosto'},
-        {value: 9, label: 'Setembro'},
-        {value: 1, label: 'Janeiro'},
-    ];
+    const months = useMemo(() => {
+          return listMonth.map((month, index) => ({value: index + 1, label: month}));
+    },[]);
 
-    const years = [
-     {value: 2020, label: 2020},
-     {value: 2021, label: 2021},
-     {value: 2019, label: 2019}
- ];
+    const years = useMemo(() => {
+         let uniqueYears : number[] = [];
+         title.data.forEach(n => {
+              const date = new Date(n.date);
+              const year = date.getFullYear();
+              if(!uniqueYears.includes(year)) {
+                    uniqueYears.push(year);
+              }
+         });
+         return uniqueYears.map(year => ({label: year, value: year}))
+    },[title.data]);
+
 
     return (
        <Container>
@@ -100,7 +105,7 @@ const List: React.FC<IRouteParams> = ({ match }) => {
                 { 
                     data.map(item => (
                          <HistoryFinanceCard 
-                         key={(new Date()).getTime() * Math.random()}
+                         key={uuid()}
                          cardColor=""
                          tagColor={item.tagColor}
                          title={item.description}
