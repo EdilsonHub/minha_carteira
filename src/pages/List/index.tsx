@@ -3,6 +3,9 @@ import React, {useMemo, useState, useEffect} from 'react';
 import ContentHeader from '../../components/ContentHeader';
 import HistoryFinanceCard from '../../components/HistoryFinanceCard';
 import SelectInput from '../../components/SelectInput';
+import formatCurrency from '../../utils/formatCurrency';
+import formatData from '../../utils/formatData';
+
 
 import gains from '../../repositories/entradas';
 import espenses from '../../repositories/saidas';
@@ -47,9 +50,9 @@ const List: React.FC<IRouteParams> = ({ match }) => {
                data => {
                     return {
                          description: data.description,
-                         amountFromatted:  data.amount,
+                         amountFromatted:  formatCurrency(data.amount),
                          frequency:  data.frequency,
-                         dataFormatted:  data.date,
+                         dataFormatted:  formatData(data.date),
                          tagColor: data.frequency === 'recorrente'? '#4E41F0' : '#E44C4E'
                     }
                }
