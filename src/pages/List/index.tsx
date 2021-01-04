@@ -30,6 +30,9 @@ interface IData {
 };
 const List: React.FC<IRouteParams> = ({ match }) => {
      const [data, setData] = useState<IData[]>([]);
+     const [monthSelected, setMonthSelected] = useState<string>(String((new Date()).getMonth() + 1));
+     const [yearSelected, setYearSelected] = useState<string>(String((new Date()).getUTCFullYear()));
+     
 
      const { type } = match.params;
      const title = useMemo(() => {
@@ -46,37 +49,46 @@ const List: React.FC<IRouteParams> = ({ match }) => {
 
      useEffect(() => {
           
-          setData(title.data.map(
-               data => {
-                    return {
-                         description: data.description,
-                         amountFromatted:  formatCurrency(data.amount),
-                         frequency:  data.frequency,
-                         dataFormatted:  formatData(data.date),
-                         tagColor: data.frequency === 'recorrente'? '#4E41F0' : '#E44C4E'
+          setData(
+               title.data.filter(
+                    item => {
+                         const date = new Date(item.date);
+                         const month = String(date.getMonth() + 1);
+                         const year = String(date.getFullYear());
+                         return (month === monthSelected && year === yearSelected);
                     }
-               }
-          ));
-
-     },[]);
+               ).map(
+                    data => {
+                         return {
+                              description: data.description,
+                              amountFromatted:  formatCurrency(data.amount),
+                              frequency:  data.frequency,
+                              dataFormatted:  formatData(data.date),
+                              tagColor: data.frequency === 'recorrente'? '#4E41F0' : '#E44C4E'
+                         }
+                    }
+               )
+          );
+     },[monthSelected, title.data, yearSelected]);
 
     const months = [
-        {value: '7', label: 'Julho'},
-        {value: 'Guilherme', label: 'Guilherme'},
-        {value: 'Ana', label: 'Ana'}
+        {value: 7, label: 'Julho'},
+        {value: 8, label: 'Agosto'},
+        {value: 9, label: 'Setembro'},
+        {value: 1, label: 'Janeiro'},
     ];
 
     const years = [
-     {value: '2020', label: '2020'},
-     {value: 'Guilherme', label: 'Guilherme'},
-     {value: 'Ana', label: 'Ana'}
+     {value: 2020, label: 2020},
+     {value: 2021, label: 2021},
+     {value: 2019, label: 2019}
  ];
 
     return (
        <Container>
            <ContentHeader title={title.desc} lineColor={title.color}>
-               <SelectInput options={months} />
-               <SelectInput options={years} />
+               <SelectInput options={months} onChange={e => setMonthSelected(e.target.value)} defaultValue={monthSelected} />
+               <SelectInput options={years} onChange={e => setYearSelected(e.target.value)} defaultValue={yearSelected} />
            </ContentHeader>
 
           <Filters>
